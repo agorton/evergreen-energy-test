@@ -2,6 +2,8 @@
 const app = require('../../app.js');
 const fs = require('fs');
 const chai = require('chai');
+const axios = require('axios');
+const { stub } = require('sinon');
 const expect = chai.expect;
 
 describe('heat loss', () => {
@@ -19,19 +21,33 @@ describe('heat loss', () => {
     it('should correctly calculate power heat loss', () => {
         var heatLoss = 8
         var heatingDegreeDays = 2
-        
+
         var expected = 4
         var result = app.calculatePowerHeatLoss(heatLoss, heatingDegreeDays)
         expect(result).to.be.equal(expected)
     })
 })
 
-// why would I do such a thing?? This is the easiest / quickest way to do an app run without setting up a local lambda.
+// Currently this isn't working -- I suspect it's because I'm mocking incorrectly. 
 describe('an app run', () => {
-    it('should run the app with some output', () => {
+    let apiStub = stub(axios, "get").returns(
+        Promise.resolve({
+            "location": {
+                "location": "Borders (Boulmer)",
+                "degreeDays": "2483",
+                "groundTemp": "9",
+                "postcode": "NE66",
+                "lat": "55.424",
+                "lng": "-1.583"
+            }
+        })
+    )
+
+    it('should run the app with some output', async () => {
         const file = fs.readFileSync('./tests/resources/houses.json')
         const houses = JSON.parse(file)
 
-        app.processHouses(houses)
+        await app.processHouses(houses)
+        expect(apiStub.callCount).to.be.equal(5)
     })
 })
