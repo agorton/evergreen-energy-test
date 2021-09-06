@@ -15,6 +15,15 @@ describe('heat loss', () => {
 
         expect(result).to.be.equal(expected)
     })
+
+    it('should correctly calculate power heat loss', () => {
+        var heatLoss = 8
+        var heatingDegreeDays = 2
+        
+        var expected = 4
+        var result = app.calculatePowerHeatLoss(heatLoss, heatingDegreeDays)
+        expect(result).to.be.equal(expected)
+    })
 })
 
 // why would I do such a thing?? This is the easiest / quickest way to do an app run without setting up a local lambda.

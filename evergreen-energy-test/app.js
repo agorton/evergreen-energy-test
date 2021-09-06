@@ -2,6 +2,10 @@ exports.calculateHeatLoss = (floorArea, heatingFactor, insulationFactor) => {
     return floorArea * heatingFactor * insulationFactor
 }
 
+exports.calculatePowerHeatLoss = (heatLoss, heatingDegreeDays) => {
+    return heatLoss / heatingDegreeDays
+}
+
 exports.processHouses = (houses) => {
     houses.map(house => {
         const floorArea = house.floorArea
